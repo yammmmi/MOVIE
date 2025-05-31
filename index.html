@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>Movie Night Countdown</title>
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      background: linear-gradient(135deg, #fcd5ce, #d3d3d3, #c3bef0);
-      font-family: 'Quicksand', sans-serif;
-      color: #7e6b74;
-      text-align: center;
-      padding: 50px;
-      margin: 0;
-      overflow-x: hidden;
+    .floating-daisy {
+      position: absolute;
+      width: 40px;
+      animation: floatDaisy 20s linear infinite;
+      opacity: 0.7;
     }
+    body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #fceff9, #e0f7fa);
+  font-family: 'Quicksand', sans-serif;
+  color: #7e6b74;
+  text-align: center;
+  padding: 50px;
+  margin: 0;
+  overflow-x: hidden;
+}
 
     h1 {
       font-family: 'Pacifico', cursive;
@@ -36,6 +47,7 @@
       font-size: 1.3em;
       color: #6b5b5b;
       margin-top: 25px;
+      transition: all 0.3s ease-in-out;
     }
 
     .cat-gif {
@@ -45,6 +57,8 @@
     }
 
     canvas {
+  max-width: 100%;
+  height: auto;
       margin-top: 20px;
       transform-origin: center;
       transition: transform 4s ease-out;
@@ -73,6 +87,11 @@
       transform: scale(1.05);
     }
 
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
     #result {
       font-size: 1.4em;
       margin-top: 30px;
@@ -98,32 +117,70 @@
       0% { left: -60px; top: 82%; }
       100% { left: 110%; top: 82%; }
     }
-
     .sparkle {
-      color: #d85f88;
-      animation: sparkle 1.5s infinite alternate;
-    }
+    color: #d85f88;
+    animation: sparkle 1.5s infinite alternate;
+  }
 
-    @keyframes sparkle {
-      0% { text-shadow: 0 0 5px #fff; }
-      100% { text-shadow: 0 0 12px #fbd3e9; }
-    }
+  @keyframes sparkle {
+    0% { text-shadow: 0 0 5px #fff; }
+    100% { text-shadow: 0 0 12px #fbd3e9; }
+  }
+  .sparkle {
+    color: #d85f88;
+    animation: sparkle 1.5s infinite alternate;
+  }
 
-    .daisy {
-      display: block;
-      margin-top: 10px;
-      font-size: 1.1em;
-      color: #739572;
-      font-style: italic;
-    }
-  </style>
+  @keyframes sparkle {
+    0% { text-shadow: 0 0 5px #fff; }
+    100% { text-shadow: 0 0 12px #fbd3e9; }
+  }
+
+  .daisy {
+    display: block;
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #7f9c8d;
+    font-style: italic;
+  }
+  .sparkle {
+    color: #d85f88;
+    animation: sparkle 1.5s infinite alternate;
+  }
+
+  @keyframes sparkle {
+    0% { text-shadow: 0 0 5px #fff; }
+    100% { text-shadow: 0 0 12px #fbd3e9; }
+  }
+
+  .daisy {
+    display: block;
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #739572;
+    font-style: italic;
+  }
+
+  .floating-daisy {
+    position: absolute;
+    width: 40px;
+    animation: floatDaisy 15s linear infinite;
+    opacity: 0.8;
+  }
+
+  @keyframes floatDaisy {
+    0% { top: 100%; left: 10%; }
+    100% { top: -10%; left: 90%; }
+  }
+</style>
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #fcd5ce, #d3d3d3, #c3bef0);">
 
   <h1><span style="color: black; font-weight: bold;">Razi</span> n <span class="sparkle">Sofia</span> Movie Night 🎬</h1>
   <div id="countdown">0d 0h 0m 0s</div>
-  <div class="message">Spin the wheel and let's find out what we're watching 💕<br><span class="daisy"><span style='color: #000; font-weight: 600;'>Pretty</span> like a white daisy 🌼</span></div>
+  <div class="message">Spin the wheel and let's find out what we're watching 💕<br><span class="daisy"><span style='color: #000; font-weight: 600;'>Pretty</span> like a white daisy 🌼</span> </div>
 
+  <!-- Animated Cat Mascot -->
   <img src="https://media.tenor.com/qwHBRvEHPVgAAAAi/cat-cute.gif" alt="Cute Animated Cat" class="cat-gif">
 
   <canvas id="wheel" width="300" height="300"></canvas>
@@ -131,14 +188,17 @@
   <div id="result"></div>
   <div class="cats-approve">🐾 Frank & George approve this movie night.</div>
 
+  <!-- Moving Cat Image -->
   <img src="https://www.freepnglogos.com/uploads/cat-png/cute-cat-images-download-7.png" class="paw-print" />
 
+  <!-- Soft background beat -->
   <audio id="bg-music" autoplay loop>
     <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5b34fd2f0e.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
   <script>
+    // Countdown
     const movieNight = new Date("June 7, 2025 20:00:00").getTime();
     const countdownFunction = setInterval(() => {
       const now = new Date().getTime();
@@ -149,27 +209,33 @@
       const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
       document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
       if (timeLeft < 0) {
-        clearInterval(countdownFunction);
-        document.getElementById("countdown").innerHTML = "🎉 It's Movie Time!";
-        document.getElementById("spinBtn").disabled = false;
-      } else {
-        document.getElementById("spinBtn").disabled = false;
-      }
+  clearInterval(countdownFunction);
+  document.getElementById("countdown").innerHTML = "🎉 It's Movie Time!";
+  document.getElementById("spinBtn").disabled = false;
+} else {
+  document.getElementById("spinBtn").disabled = false;
+}
     }, 1000);
 
+    // Spin Wheel
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
     const options = [
-      "10 Things I Hate About You",
-      "Mulan",
-      "Shang-Chi",
-      "The Best of Me",
-      "Body Cam",
-      "Wall-E"
-    ];
+  "10 Things I Hate About You",
+  "Mulan",
+  "Shang-Chi",
+  "The Best of Me",
+  "Body Cam",
+  "Wall-E"
+];
     const colors = [
-      "#f4dada", "#ffe1c6", "#f9f7d9", "#d6ede2", "#d4e3f3", "#e5d4ef"
-    ];
+  "#f4dada",  // soft rose
+  "#ffe1c6",  // peachy cream
+  "#f9f7d9",  // pale yellow
+  "#d6ede2",  // soft mint
+  "#d4e3f3",  // pastel blue
+  "#e5d4ef"   // light lavender
+];
     let startAngle = 0;
     const arc = Math.PI / (options.length / 2);
 
@@ -192,32 +258,32 @@
 
     let hasSpun = false;
     function spin() {
-      const now = new Date().getTime();
-      if (now < movieNight) {
-        const msgBox = document.createElement('div');
-        msgBox.innerText = "😤 WOW YOU TRY TO WATCH IT WITHOUT ME?!";
-        msgBox.style.position = 'fixed';
-        msgBox.style.top = '50%';
-        msgBox.style.left = '50%';
-        msgBox.style.transform = 'translate(-50%, -50%)';
-        msgBox.style.background = '#fff';
-        msgBox.style.color = '#d85f88';
-        msgBox.style.padding = '20px 30px';
-        msgBox.style.borderRadius = '10px';
-        msgBox.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-        msgBox.style.zIndex = '9999';
-        msgBox.style.fontWeight = 'bold';
-        msgBox.style.fontFamily = 'Quicksand, sans-serif';
-        document.body.appendChild(msgBox);
-        setTimeout(() => msgBox.remove(), 2500);
-        return;
-      }
-      if (hasSpun) return;
-      hasSpun = true;
+  const now = new Date().getTime();
+  if (now < movieNight) {
+    const msgBox = document.createElement('div');
+    msgBox.innerText = "😤 WOW YOU TRY TO WATCH IT WITHOUT ME?!";
+    msgBox.style.position = 'fixed';
+    msgBox.style.top = '50%';
+    msgBox.style.left = '50%';
+    msgBox.style.transform = 'translate(-50%, -50%)';
+    msgBox.style.background = '#fff';
+    msgBox.style.color = '#d85f88';
+    msgBox.style.padding = '20px 30px';
+    msgBox.style.borderRadius = '10px';
+    msgBox.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+    msgBox.style.zIndex = '9999';
+    msgBox.style.fontWeight = 'bold';
+    msgBox.style.fontFamily = 'Quicksand, sans-serif';
+    document.body.appendChild(msgBox);
+    setTimeout(() => msgBox.remove(), 2500);
+    return;
+  }
+  if (hasSpun) return;
+  hasSpun = true;
 
-      const randomIndex = Math.floor(Math.random() * options.length);
-      const angle = 360 * 5 + (randomIndex * (360 / options.length));
-      canvas.style.transform = `rotate(${angle}deg)`;
+  const randomIndex = Math.floor(Math.random() * options.length);
+  const angle = 360 * 5 + (randomIndex * (360 / options.length));
+  canvas.style.transform = `rotate(${angle}deg)`;
 
       setTimeout(() => {
         document.getElementById("result").innerText = `Tonight’s pick is: ${options[randomIndex]} 💗`;
@@ -225,5 +291,88 @@
       }, 4000);
     }
   </script>
+
+  <!-- Floating Daisies -->
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
