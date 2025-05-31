@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Night Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #fcd5ce, #d3d3d3, #c3bef0);
+      font-family: 'Quicksand', sans-serif;
+      color: #7e6b74;
+      text-align: center;
+      padding: 50px;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 3em;
+      margin-bottom: 10px;
+      color: #f497b5;
+      text-shadow: 1px 1px 2px #f8d8e4;
+    }
+
+    #countdown {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #5c5470;
+      text-shadow: 1px 1px 2px #eee;
+    }
+
+    .message {
+      font-size: 1.3em;
+      color: #6b5b5b;
+      margin-top: 25px;
+    }
+
+    .cat-gif {
+      margin: 20px auto;
+      width: 120px;
+      border-radius: 50%;
+    }
+
+    canvas {
+      margin-top: 20px;
+      transform-origin: center;
+      transition: transform 4s ease-out;
+      border: 5px solid #fff;
+      border-radius: 50%;
+      background-color: rgba(255, 245, 250, 0.6);
+    }
+
+    button {
+      background-color: #f497b5;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1em;
+      font-weight: bold;
+      font-family: 'Quicksand', sans-serif;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #e36c96;
+      transform: scale(1.05);
+    }
+
+    #result {
+      font-size: 1.4em;
+      margin-top: 30px;
+      color: #5c5470;
+      font-weight: 600;
+    }
+
+    .cats-approve {
+      margin-top: 30px;
+      font-size: 1em;
+      color: #856088;
+      font-style: italic;
+    }
+
+    .paw-print {
+      position: absolute;
+      width: 60px;
+      animation: walk 12s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes walk {
+      0% { left: -60px; top: 82%; }
+      100% { left: 110%; top: 82%; }
+    }
+
+    .sparkle {
+      color: #d85f88;
+      animation: sparkle 1.5s infinite alternate;
+    }
+
+    @keyframes sparkle {
+      0% { text-shadow: 0 0 5px #fff; }
+      100% { text-shadow: 0 0 12px #fbd3e9; }
+    }
+
+    .daisy {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.1em;
+      color: #739572;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <h1><span style="color: black; font-weight: bold;">Razi</span> n <span class="sparkle">Sofia</span> Movie Night 🎬</h1>
+  <div id="countdown">0d 0h 0m 0s</div>
+  <div class="message">Spin the wheel and let's find out what we're watching 💕<br><span class="daisy"><span style='color: #000; font-weight: 600;'>Pretty</span> like a white daisy 🌼</span></div>
+
+  <img src="https://media.tenor.com/qwHBRvEHPVgAAAAi/cat-cute.gif" alt="Cute Animated Cat" class="cat-gif">
+
+  <canvas id="wheel" width="300" height="300"></canvas>
+  <button id="spinBtn" onclick="spin()">🎡 Spin the Wheel</button>
+  <div id="result"></div>
+  <div class="cats-approve">🐾 Frank & George approve this movie night.</div>
+
+  <img src="https://www.freepnglogos.com/uploads/cat-png/cute-cat-images-download-7.png" class="paw-print" />
+
+  <audio id="bg-music" autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5b34fd2f0e.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const movieNight = new Date("June 7, 2025 20:00:00").getTime();
+    const countdownFunction = setInterval(() => {
+      const now = new Date().getTime();
+      const timeLeft = movieNight - now;
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      if (timeLeft < 0) {
+        clearInterval(countdownFunction);
+        document.getElementById("countdown").innerHTML = "🎉 It's Movie Time!";
+        document.getElementById("spinBtn").disabled = false;
+      } else {
+        document.getElementById("spinBtn").disabled = false;
+      }
+    }, 1000);
+
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const options = [
+      "10 Things I Hate About You",
+      "Mulan",
+      "Shang-Chi",
+      "The Best of Me",
+      "Body Cam",
+      "Wall-E"
+    ];
+    const colors = [
+      "#f4dada", "#ffe1c6", "#f9f7d9", "#d6ede2", "#d4e3f3", "#e5d4ef"
+    ];
+    let startAngle = 0;
+    const arc = Math.PI / (options.length / 2);
+
+    function drawWheel() {
+      for (let i = 0; i < options.length; i++) {
+        const angle = startAngle + i * arc;
+        ctx.fillStyle = colors[i];
+        ctx.beginPath();
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, angle, angle + arc);
+        ctx.lineTo(150, 150);
+        ctx.fill();
+        ctx.fillStyle = "#2a2a2a";
+        ctx.font = "14px Quicksand";
+        ctx.fillText(options[i], 150 + Math.cos(angle + arc / 2) * 100 - 40, 150 + Math.sin(angle + arc / 2) * 100);
+      }
+    }
+
+    drawWheel();
+
+    let hasSpun = false;
+    function spin() {
+      const now = new Date().getTime();
+      if (now < movieNight) {
+        const msgBox = document.createElement('div');
+        msgBox.innerText = "😤 WOW YOU TRY TO WATCH IT WITHOUT ME?!";
+        msgBox.style.position = 'fixed';
+        msgBox.style.top = '50%';
+        msgBox.style.left = '50%';
+        msgBox.style.transform = 'translate(-50%, -50%)';
+        msgBox.style.background = '#fff';
+        msgBox.style.color = '#d85f88';
+        msgBox.style.padding = '20px 30px';
+        msgBox.style.borderRadius = '10px';
+        msgBox.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+        msgBox.style.zIndex = '9999';
+        msgBox.style.fontWeight = 'bold';
+        msgBox.style.fontFamily = 'Quicksand, sans-serif';
+        document.body.appendChild(msgBox);
+        setTimeout(() => msgBox.remove(), 2500);
+        return;
+      }
+      if (hasSpun) return;
+      hasSpun = true;
+
+      const randomIndex = Math.floor(Math.random() * options.length);
+      const angle = 360 * 5 + (randomIndex * (360 / options.length));
+      canvas.style.transform = `rotate(${angle}deg)`;
+
+      setTimeout(() => {
+        document.getElementById("result").innerText = `Tonight’s pick is: ${options[randomIndex]} 💗`;
+        document.getElementById("spinBtn").disabled = true;
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
